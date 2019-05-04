@@ -1,0 +1,23 @@
+<inputs>
+
+	<test>
+		<plan>plan_name</plan>
+		<TestCase>plan_name.jmx</TestCase>
+		<uri>/</uri>
+		<threads>1</threads>
+		<loop>1</loop>
+		<ramp>1</ramp>
+	</test>
+
+	<test>
+		<plan>plan_name1</plan>
+		<TestCase>plan_name1.jmx</TestCase>
+		<uri>/</uri>
+		<threads>5</threads>
+		<loop>1</loop>
+		<ramp>1</ramp>
+	</test>
+
+</inputs>
+
+

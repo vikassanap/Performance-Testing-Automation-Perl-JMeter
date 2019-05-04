@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ac="antlib:net.sf.antcontrib" name="jmeter-automation" default="run" basedir=".">
+   <description>simple example build file</description>
+   <taskdef name="jmeter" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" />
+   <loadproperties srcFile="config.properties" />
+   <property name="threads" value="" />
+   <property name="loop" value="" />
+   <property name="plan" value="" />
+   <property name="TestCase" value="" />
+   <property name="lib.dir" value="${basedir}/apache-jmeter-2.11/lib" />
+   <property name="server" value="www.grayroost.com" />
+   <property name="port" value="80" />
+   <property name="protocol" value="http" />
+   <property name="uri" value="" />
+   <property name="input" value="${basedir}/*.xml" />
+   <property name="inputdir" value="${basedir}/input" />
+   <property name="outputdir" value="${basedir}/output" />
+   <property name="jtldir" value="${basedir}/jtl" />
+   <property name="jtlhistorydir" value="${basedir}/historyjtl" />
+   <property name="maildir" value="${basedir}/mail" />
+   <property name="extras" value="${basedir}/apache-jmeter-2.11/extras" />
+   <!-- Use xalan copy from JMeter lib directory to ensure consistent processing with Java 1.4+ -->
+   <path id="xslt.classpath">
+      <fileset dir="${lib.dir}" includes="xalan*.jar" />
+      <fileset dir="${lib.dir}" includes="serializer*.jar" />
+   </path>
+   <target name="run">
+      <echo message=" thecafetechno.com For task demonstration " />
+      <echo message="Inside the Target" />
+      <tstamp>
+         <format property="report.datestamp" pattern="yyyy-MM-dd HH.mm.ss" />
+      </tstamp>
+      <echo message="${server}" />
+      <echo message="${port}" />
+      <echo message="${inputdir}" />
+      <echo message="${inputdir}/${input}.xml" />
+      <echo message="${jtldir}" />
+      <jmeter jmeterhome="${basedir}/apache-jmeter-2.11" resultlog="${jtldir}/${plan}_TestResults_at_${report.datestamp}.jtl">
+         <property name="request1.threads" value="${threads}" />
+         <property name="request1.loop" value="${loop}" />
+         <property name="request1.uri" value="${uri}" />
+         <property name="request1.server" value="${server}" />
+         <property name="request1.port" value="${port}" />
+         <property name="request1.TestCase" value="${TestCase}" />
+         <property name="request1.url" value="${protocol}://${server}:${port}/${uri}" />
+         <property name="request1.file" value="${inputdir}/${input}.xml" />
+         <property name="request1.ramp" value="${ramp}" />
+         <testplans dir="${inputdir}" includes="${plan}.jmx" />
+      </jmeter>
+      <copy todir="${jtlhistorydir}">
+         <fileset dir="${jtldir}" />
+      </copy>
+      <echo message="${TestCase}" />
+      <echo message="${uri}" />
+      <echo message="${threads}" />
+      <echo message="${ramp}" />
+      <echo message="${loop}" />
+      <property name="report.title" value="'${TestCase}' Report : Generated at ${report.datestamp} for ${threads} with ramp up period ${ramp} and ${loop}" />
+      <xslt classpathref="xslt.classpath" force="true" in="${jtldir}/${plan}_TestResults_at_${report.datestamp}.jtl" out="${maildir}/${plan}_TestResults_at_${report.datestamp}.html" style="${extras}/jmeter-results-detail-report_21.xsl">
+         <param name="showData" expression="${show-data}" />
+         <param name="dateReport" expression="${report.datestamp}" />
+         <param name="titleReport" expression="${report.title}" />
+      </xslt>
+      <copy todir="${outputdir}">
+         <fileset dir="${maildir}" />
+      </copy>
+      <property name="line2" value="some_international_message" />
+      <echo message="${line2}" />
+   </target>
+</project>
